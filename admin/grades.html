@@ -1,361 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Grades - Admin</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-      :root {
-        --teal: #0d7b6e;
-        --teal-dark: #1a5f5f;
-      }
-      html,
-      body {
-        width: 100%;
-        min-height: 100vh;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-      }
-      body {
-        background: #f5f6fa;
-      }
-      .top-header {
-        background: var(--teal-dark);
-        padding: 0 30px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .logo-mark {
-        width: 38px;
-        height: 38px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-      }
-      .header-left span {
-        color: white;
-        font-weight: 700;
-        font-size: 15px;
-      }
-      .back-btn {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-        padding: 8px 18px;
-        font-size: 14px;
-        text-decoration: none;
-      }
-      .container {
-        max-width: 1100px;
-        margin: 40px auto;
-        padding: 0 25px;
-      }
-      .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: #6b7280;
-        font-size: 14px;
-        margin-bottom: 25px;
-      }
-      .breadcrumb a {
-        color: #6b7280;
-        text-decoration: none;
-      }
-      .form-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 30px;
-        margin-bottom: 25px;
-        animation: slideUp 0.4s ease-out;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root { --teal: #0d7b6e; --teal-dark: #1a5f5f; }
+        html, body { width: 100%; min-height: 100vh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+        body { background: #f5f6fa; }
+        .top-header { background: var(--teal-dark); padding: 0 30px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo-mark { width: 38px; height: 38px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; }
+        .header-left span { color: white; font-weight: 700; font-size: 15px; }
+        .back-btn { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 8px 18px; font-size: 14px; text-decoration: none; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 25px; }
+        .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 14px; margin-bottom: 25px; }
+        .breadcrumb a { color: #6b7280; text-decoration: none; }
+
+        .form-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 30px; margin-bottom: 25px; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .form-card h2 { font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 20px; }
+
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: end; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 7px; }
+        .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #111827; outline: none; transition: all 0.2s; background: white; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(13, 123, 110, 0.1); }
+
+        /* Autocomplete container */
+        .autocomplete-wrapper { position: relative; }
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        .autocomplete-list.show { display: block; }
+        .autocomplete-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+            transition: background 0.15s;
         }
-      }
-      .form-card h2 {
-        font-size: 20px;
-        font-weight: 800;
-        color: #111827;
-        margin-bottom: 20px;
-      }
-      .form-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
-        align-items: end;
-      }
-      .form-group label {
-        display: block;
-        font-size: 13px;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 7px;
-      }
-      .form-group input,
-      .form-group select {
-        width: 100%;
-        padding: 11px 14px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #111827;
-        outline: none;
-        transition: all 0.2s;
-        background: white;
-      }
-      .form-group input:focus,
-      .form-group select:focus {
-        border-color: var(--teal);
-        box-shadow: 0 0 0 2px rgba(13, 123, 110, 0.1);
-      }
-      .btn-add {
-        background: linear-gradient(135deg, var(--teal), #2d9e7a);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 28px;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s;
-        white-space: nowrap;
-      }
-      .btn-add:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(13, 123, 110, 0.3);
-      }
-      .success-alert {
-        background: #dcfce7;
-        border: 1px solid #bbf7d0;
-        color: #15803d;
-        padding: 12px 18px;
-        border-radius: 8px;
-        margin-top: 15px;
-        display: none;
-        font-weight: 500;
-      }
-      .table-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 25px;
-        animation: slideUp 0.5s ease-out;
-      }
-      .table-card h3 {
-        font-size: 18px;
-        font-weight: 700;
-        color: #111827;
-        margin-bottom: 15px;
-      }
-      .search-row {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-      .search-input {
-        flex: 1;
-        padding: 10px 14px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 14px;
-        outline: none;
-        min-width: 200px;
-      }
-      .search-input:focus {
-        border-color: var(--teal);
-      }
-      .grades-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .grades-table thead tr {
-        background: #f1f5f9;
-      }
-      .grades-table th {
-        padding: 12px 16px;
-        text-align: left;
-        font-size: 12px;
-        font-weight: 700;
-        color: #6b7280;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #e5e7eb;
-      }
-      .grades-table td {
-        padding: 13px 16px;
-        font-size: 14px;
-        color: #374151;
-        border-bottom: 1px solid #f3f4f6;
-      }
-      .grades-table tr:hover td {
-        background: #f9fafb;
-      }
-      .grades-table tr:last-child td {
-        border-bottom: none;
-      }
-      .grade-badge {
-        display: inline-block;
-        padding: 3px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-        background: #dcfce7;
-        color: #15803d;
-      }
-      .grade-badge.fail {
-        background: #fee2e2;
-        color: #dc2626;
-      }
-      .delete-grade {
-        background: #fee2e2;
-        color: #dc2626;
-        border: 1px solid #fca5a5;
-        border-radius: 6px;
-        padding: 5px 12px;
-        font-size: 12px;
-        cursor: pointer;
-      }
-      .no-data {
-        text-align: center;
-        padding: 40px;
-        color: #9ca3af;
-        font-size: 14px;
-      }
-      @media (max-width: 768px) {
-        .form-row {
-          grid-template-columns: 1fr;
+        .autocomplete-item:hover { background: #f0fdfa; color: var(--teal); }
+
+        .btn-add { background: linear-gradient(135deg, var(--teal), #2d9e7a); color: white; border: none; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .btn-add:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(13, 123, 110, 0.3); }
+        .btn-add:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .success-alert { background: #dcfce7; border: 1px solid #bbf7d0; color: #15803d; padding: 12px 18px; border-radius: 8px; margin-top: 15px; display: none; font-weight: 500; }
+
+        /* Quick Add Section */
+        .quick-add {
+            background: #f0fdfa;
+            border: 1px dashed var(--teal);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #065f46;
         }
-        .search-row {
-          flex-direction: column;
+        .quick-add strong { color: var(--teal); }
+
+        .table-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 25px; animation: slideUp 0.5s ease-out; }
+        .table-card h3 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 15px; }
+        .search-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .search-input { flex: 1; padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; min-width: 200px; }
+        .search-input:focus { border-color: var(--teal); }
+        .count-badge { background: var(--teal); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+        .grades-table { width: 100%; border-collapse: collapse; }
+        .grades-table thead tr { background: #f1f5f9; }
+        .grades-table th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e7eb; }
+        .grades-table td { padding: 13px 16px; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+        .grades-table tr:hover td { background: #f9fafb; }
+        .grades-table tr:last-child td { border-bottom: none; }
+        .grade-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; background: #dcfce7; color: #15803d; }
+        .grade-badge.fail { background: #fee2e2; color: #dc2626; }
+        .delete-grade { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .delete-grade:hover { background: #fca5a5; }
+        .no-data { text-align: center; padding: 40px; color: #9ca3af; font-size: 14px; }
+
+        /* Loading spinner */
+        .loading-row td { text-align: center; padding: 30px; color: #6b7280; }
+        .spinner-small { display: inline-block; width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .page-btn { padding: 8px 14px; border: 1px solid #e5e7eb; background: white; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+        .page-btn:hover { border-color: var(--teal); color: var(--teal); }
+        .page-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .search-row { flex-direction: column; }
+            .grades-table th, .grades-table td { padding: 10px 10px; font-size: 13px; }
         }
-        .grades-table th,
-        .grades-table td {
-          padding: 10px 10px;
-        }
-      }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header class="top-header">
-      <div class="header-left">
-        <div class="logo-mark">G</div>
-        <span>Admin Panel</span>
-      </div>
-      <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <div class="header-left"><div class="logo-mark">G</div><span>Admin Panel</span></div>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
     </header>
+
     <div class="container">
-      <div class="breadcrumb">
-        <a href="index.html">🏠 Dashboard</a><span>›</span
-        ><span>Manage Grades</span>
-      </div>
-      <div class="form-card">
-        <h2>📊 Add Student Grade</h2>
-        <form id="gradeForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Student ID *</label>
-              <select id="studentId">
-                <option value="">Select Student</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Subject *</label>
-              <input
-                type="text"
-                id="subject"
-                required
-                placeholder="e.g. CCNA III"
-              />
-            </div>
-            <div class="form-group">
-              <label>Semester</label>
-              <input
-                type="text"
-                id="semester"
-                placeholder="e.g. Semester 1 - 2025"
-              />
-            </div>
-            <div class="form-group">
-              <label>Grade *</label>
-              <select id="grade" required>
-                <option value="">Select Grade</option>
-                <option value="ممتاز">ممتاز (Excellent)</option>
-                <option value="جيد جداً">جيد جداً (Very Good)</option>
-                <option value="جيد">جيد (Good)</option>
-                <option value="مقبول">مقبول (Pass)</option>
-                <option value="راسب">راسب (Fail)</option>
-                <option value="A+">A+</option>
-                <option value="A">A</option>
-                <option value="B+">B+</option>
-                <option value="B">B</option>
-                <option value="C+">C+</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="F">F</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <button type="submit" class="btn-add">Add Grade</button>
-            </div>
-          </div>
-          <div class="success-alert" id="successAlert">
-            ✅ Grade added successfully!
-          </div>
-        </form>
-      </div>
-      <div class="table-card">
-        <h3>All Student Grades</h3>
-        <div class="search-row">
-          <input
-            type="text"
-            class="search-input"
-            id="searchInput"
-            placeholder="🔍 Search by student ID or subject..."
-          />
+        <div class="breadcrumb"><a href="index.html">🏠 Dashboard</a><span>›</span><span>Manage Grades</span></div>
+
+        <div class="form-card">
+            <h2>📊 Add Student Grade</h2>
+            <form id="gradeForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Student ID *</label>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="studentId" placeholder="e.g. 2620100" autocomplete="off" required>
+                            <div class="autocomplete-list" id="autocompleteList"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject *</label>
+                        <input type="text" id="subject" required placeholder="e.g. CCNA III" list="subjectsList">
+                        <datalist id="subjectsList">
+                            <option value="CCNA III">
+                            <option value="Network Programming">
+                            <option value="Embedded Systems">
+                            <option value="Software Engineering">
+                            <option value="Linux Essentials">
+                            <option value="Operating System">
+                            <option value="Digital Engineering">
+                            <option value="C++ Programming">
+                            <option value="Web Programming">
+                            <option value="Introduction to DB">
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <input type="text" id="semester" placeholder="e.g. Semester 1 - 2025" list="semestersList">
+                        <datalist id="semestersList">
+                            <option value="Semester 1 - 2024-2025">
+                            <option value="Semester 2 - 2024-2025">
+                            <option value="Semester 1 - 2025-2026">
+                            <option value="Semester 2 - 2025-2026">
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label>Grade *</label>
+                        <select id="grade" required>
+                            <option value="">Select Grade</option>
+                            <option value="ممتاز">ممتاز (Excellent)</option>
+                            <option value="جيد جداً">جيد جداً (Very Good)</option>
+                            <option value="جيد">جيد (Good)</option>
+                            <option value="مقبول">مقبول (Pass)</option>
+                            <option value="راسب">راسب (Fail)</option>
+                            <option value="A+">A+</option>
+                            <option value="A">A</option>
+                            <option value="B+">B+</option>
+                            <option value="B">B</option>
+                            <option value="C+">C+</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="F">F</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn-add" id="submitBtn">Add Grade</button>
+                    </div>
+                </div>
+
+                <div class="quick-add">
+                    💡 <strong>Quick Tip:</strong> اكتب أول 3 أرقام من الـ ID وهتظهرلك اقتراحات تلقائياً.
+                    النطاق المسموح: من 262001 لـ 2620200
+                </div>
+
+                <div class="success-alert" id="successAlert">✅ Grade added successfully!</div>
+            </form>
         </div>
-        <div style="overflow-x: auto">
-          <table class="grades-table">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Subject</th>
-                <th>Semester</th>
-                <th>Grade</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="gradesBody"></tbody>
-          </table>
+
+        <div class="table-card">
+            <h3>All Student Grades</h3>
+            <div class="search-row">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by student ID or subject...">
+                <span class="count-badge" id="countBadge">0 grades</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Subject</th>
+                            <th>Semester</th>
+                            <th>Grade</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradesBody">
+                        <tr class="loading-row"><td colspan="5"><span class="spinner-small"></span>Loading grades...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination"></div>
         </div>
-      </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -363,113 +220,242 @@
     <script src="../js/firebase-config.js"></script>
     <script src="../js/cloud.js"></script>
     <script>
-      if (localStorage.getItem("userType") !== "admin")
-        window.location.href = "../index.html";
+        if (localStorage.getItem('userType') !== 'admin') window.location.href = '../index.html';
 
-      // Fill student dropdown
-      const studentSelect = document.getElementById("studentId");
-      for (let i = 262001; i <= 2620200; i++) {
-        const option = document.createElement("option");
-        option.value = i.toString();
-        option.textContent = i.toString();
-        studentSelect.appendChild(option);
-      }
+        // ===== CONFIG =====
+        const ITEMS_PER_PAGE = 20;
+        let currentPage = 1;
+        let allRows = [];
+        let filteredRows = [];
 
-      let allRows = [];
+        // ===== AUTOCOMPLETE للـ Student ID =====
+        const studentIdInput = document.getElementById('studentId');
+        const autocompleteList = document.getElementById('autocompleteList');
 
-      function loadAllGrades() {
-        CloudStorage.getAllGrades().then((allGrades) => {
-          allRows = [];
-          for (const [sid, grades] of Object.entries(allGrades)) {
-            Object.entries(grades).forEach(([key, g]) => {
-              allRows.push({ studentId: sid, key: key, ...g });
-            });
-          }
-          renderGrades(document.getElementById("searchInput").value);
+        studentIdInput.addEventListener('input', function() {
+            const val = this.value.trim();
+            autocompleteList.innerHTML = '';
+
+            // لو فاضي أو مش أرقام، إخفي القائمة
+            if (!val || !/^\d+$/.test(val)) {
+                autocompleteList.classList.remove('show');
+                return;
+            }
+
+            // اقترح IDs بتبدأ بالأرقام دي
+            const suggestions = [];
+            const start = parseInt(val);
+            const end = Math.min(start + 10, 2620200);
+
+            // لو الـ ID كامل وصحيح، اعرضه بس
+            if (val.length >= 6) {
+                const num = parseInt(val);
+                if (num >= 262001 && num <= 2620200) {
+                    suggestions.push(num.toString());
+                }
+            } else {
+                // اقترح 10 IDs
+                for (let i = start; i <= end && suggestions.length < 10; i++) {
+                    if (i >= 262001 && i <= 2620200) {
+                        suggestions.push(i.toString());
+                    }
+                }
+            }
+
+            if (suggestions.length === 0) {
+                autocompleteList.classList.remove('show');
+                return;
+            }
+
+            autocompleteList.innerHTML = suggestions.map(id =>
+                `<div class="autocomplete-item" onclick="selectStudent('${id}')">${id}</div>`
+            ).join('');
+            autocompleteList.classList.add('show');
         });
-      }
 
-      function renderGrades(filter = "") {
-        const filtered = filter
-          ? allRows.filter(
-              (r) =>
-                r.studentId.includes(filter) ||
-                (r.subject &&
-                  r.subject.toLowerCase().includes(filter.toLowerCase())),
-            )
-          : allRows;
-
-        const tbody = document.getElementById("gradesBody");
-        if (filtered.length === 0) {
-          tbody.innerHTML =
-            '<tr><td colspan="5" class="no-data">No grades found.</td></tr>';
-          return;
+        function selectStudent(id) {
+            studentIdInput.value = id;
+            autocompleteList.classList.remove('show');
         }
 
-        tbody.innerHTML = filtered
-          .map((r) => {
-            const isFail = r.grade === "F" || r.grade === "راسب";
-            return `
+        // إخفي القائمة لما تضغط براها
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-wrapper')) {
+                autocompleteList.classList.remove('show');
+            }
+        });
+
+        // ===== تحميل الدرجات =====
+        function loadAllGrades() {
+            const tbody = document.getElementById('gradesBody');
+            tbody.innerHTML = '<tr class="loading-row"><td colspan="5"><span class="spinner-small"></span>Loading grades...</td></tr>';
+
+            CloudStorage.getAllGrades().then(allGrades => {
+                allRows = [];
+                for (const [sid, grades] of Object.entries(allGrades)) {
+                    Object.entries(grades).forEach(([key, g]) => {
+                        allRows.push({ studentId: sid, key: key, ...g });
+                    });
+                }
+
+                // رتب تنازلياً حسب التاريخ
+                allRows.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+                document.getElementById('countBadge').textContent = allRows.length + ' grades';
+                applyFilter();
+            }).catch(err => {
+                console.error(err);
+                tbody.innerHTML = '<tr class="loading-row"><td colspan="5">❌ Error loading grades</td></tr>';
+            });
+        }
+
+        // ===== فلترة + Pagination =====
+        function applyFilter() {
+            const filter = document.getElementById('searchInput').value.trim().toLowerCase();
+            filteredRows = filter ?
+                allRows.filter(r =>
+                    r.studentId.includes(filter) ||
+                    (r.subject && r.subject.toLowerCase().includes(filter))
+                ) : allRows;
+
+            currentPage = 1;
+            renderPage();
+        }
+
+        function renderPage() {
+            const tbody = document.getElementById('gradesBody');
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const pageRows = filteredRows.slice(start, end);
+
+            if (pageRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="no-data">No grades found.</td></tr>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = pageRows.map(r => {
+                const isFail = r.grade === 'F' || r.grade === 'راسب';
+                return `
                     <tr>
                         <td><strong>${r.studentId}</strong></td>
-                        <td>${r.subject || "-"}</td>
-                        <td>${r.semester || "-"}</td>
-                        <td><span class="grade-badge ${isFail ? "fail" : ""}">${r.grade}</span></td>
+                        <td>${r.subject || '-'}</td>
+                        <td>${r.semester || '-'}</td>
+                        <td><span class="grade-badge ${isFail ? 'fail' : ''}">${r.grade}</span></td>
                         <td>
                             <button class="delete-grade" onclick="deleteGrade('${r.studentId}', '${r.key}')">🗑 Delete</button>
                         </td>
                     </tr>`;
-          })
-          .join("");
-      }
+            }).join('');
 
-      function deleteGrade(studentId, key) {
-        if (!confirm("Delete this grade?")) return;
-        db.ref("grades/" + studentId + "/" + key)
-          .remove()
-          .then(() => {
-            loadAllGrades();
-          });
-      }
+            renderPagination();
+        }
 
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", function () {
-          renderGrades(this.value);
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredRows.length / ITEMS_PER_PAGE);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Prev</button>`;
+
+            // اعرض 5 صفحات بس حوالي الصفحة الحالية
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span style="padding:8px">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span style="padding:8px">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+
+            html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next →</button>`;
+
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredRows.length / ITEMS_PER_PAGE);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderPage();
+            // Scroll للجدول
+            document.querySelector('.table-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ===== حذف درجة =====
+        function deleteGrade(studentId, key) {
+            if (!confirm('Delete this grade?')) return;
+            db.ref('grades/' + studentId + '/' + key).remove().then(() => {
+                loadAllGrades();
+            });
+        }
+
+        // ===== بحث =====
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => applyFilter(), 300);
         });
 
-      document
-        .getElementById("gradeForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const studentId = document.getElementById("studentId").value;
-          if (!studentId) {
-            alert("Please select a student!");
-            return;
-          }
+        // ===== إضافة درجة =====
+        document.getElementById('gradeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-          CloudStorage.saveGrade(studentId, {
-            subject: document.getElementById("subject").value,
-            semester: document.getElementById("semester").value,
-            grade: document.getElementById("grade").value,
-            date: new Date().toLocaleDateString(),
-          }).then(() => {
-            document.getElementById("successAlert").style.display = "block";
-            setTimeout(
-              () =>
-                (document.getElementById("successAlert").style.display =
-                  "none"),
-              3000,
-            );
-            document.getElementById("subject").value = "";
-            document.getElementById("semester").value = "";
-            document.getElementById("grade").value = "";
-            document.getElementById("studentId").value = "";
-            loadAllGrades();
-          });
+            const studentId = studentIdInput.value.trim();
+            const num = parseInt(studentId);
+
+            // تحقق من الـ ID
+            if (!studentId || isNaN(num) || num < 262001 || num > 2620200) {
+                alert('⚠️ Student ID must be between 262001 and 2620200');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding...';
+
+            CloudStorage.saveGrade(studentId, {
+                subject: document.getElementById('subject').value,
+                semester: document.getElementById('semester').value,
+                grade: document.getElementById('grade').value,
+                date: new Date().toLocaleDateString()
+            }).then(() => {
+                document.getElementById('successAlert').style.display = 'block';
+                setTimeout(() => document.getElementById('successAlert').style.display = 'none', 3000);
+
+                // Reset الفورم
+                document.getElementById('subject').value = '';
+                document.getElementById('semester').value = '';
+                document.getElementById('grade').value = '';
+                studentIdInput.value = '';
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Grade';
+
+                // إعادة تحميل الدرجات
+                loadAllGrades();
+            }).catch(err => {
+                alert('❌ Error: ' + err.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Grade';
+            });
         });
 
-      loadAllGrades();
+        // ===== ابدأ =====
+        loadAllGrades();
     </script>
-  </body>
+</body>
 </html>
