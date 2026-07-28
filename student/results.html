@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Results - ENG: Gamal Elmzayen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root { --teal: #0d7b6e; --teal-dark: #1a5f5f; --teal-light: #e8f5f3; --sidebar-width: 240px; --header-height: 60px; }
+        html, body { width: 100%; min-height: 100vh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+        body { background: #f5f6fa; display: flex; }
+        .top-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: var(--teal-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; }
+        .header-logo { display: flex; align-items: center; gap: 12px; }
+        .logo-mark { width: 38px; height: 38px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; }
+        .header-logo span { color: white; font-weight: 700; font-size: 15px; }
+        .hamburger { display: none; background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+        .header-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), #2d9e7a); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; cursor: pointer; }
+        .header-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .sidebar { position: fixed; top: var(--header-height); left: 0; width: var(--sidebar-width); height: calc(100vh - var(--header-height)); background: white; border-right: 1px solid #e5e7eb; overflow-y: auto; z-index: 900; padding: 20px 0; transition: transform 0.3s; }
+        .menu-section { padding: 0 16px; margin-bottom: 8px; }
+        .menu-label { font-size: 11px; font-weight: 700; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase; padding: 12px 8px 6px; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #4b5563; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.2s; position: relative; }
+        .nav-link:hover, .nav-link.active { background: var(--teal-light); color: var(--teal); }
+        .nav-link.active { font-weight: 600; }
+        .nav-link.active::after { content: ''; position: absolute; right: 10px; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; }
+        .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+        .nav-divider { height: 1px; background: #f3f4f6; margin: 12px 16px; }
+        .sidebar-logout { display: flex; align-items: center; gap: 12px; padding: 10px 28px; color: #6b7280; cursor: pointer; font-size: 14px; border: none; background: none; width: 100%; }
+        .sidebar-logout:hover { color: #ef4444; }
+        .main-content { margin-left: var(--sidebar-width); margin-top: var(--header-height); flex: 1; padding: 30px; animation: fadeInPage 0.4s ease-out; }
+        @keyframes fadeInPage { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 14px; margin-bottom: 10px; }
+        .breadcrumb a { color: #6b7280; text-decoration: none; }
+        .page-title { font-size: 32px; font-weight: 800; color: #111827; margin-bottom: 20px; }
+        .separator { height: 1px; background: #e5e7eb; margin-bottom: 25px; }
+        .student-record { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; animation: slideIn 0.4s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
+        .record-label { font-size: 11px; font-weight: 700; color: #6b7280; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+        .record-name { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 4px; }
+        .record-id { font-size: 13px; color: #6b7280; }
+        .record-id span { color: var(--teal); font-weight: 600; }
+        .semester-block { background: white; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 20px; overflow: hidden; animation: slideIn 0.5s ease-out both; }
+        .semester-header { background: #f9fafb; padding: 14px 24px; display: flex; align-items: center; justify-content: flex-end; border-bottom: 1px solid #e5e7eb; font-size: 14px; font-weight: 700; color: #374151; }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table thead tr { background: #f1f5f9; }
+        .results-table th { padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: #6b7280; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
+        .results-table th:last-child { text-align: right; }
+        .results-table td { padding: 14px 24px; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+        .results-table td:last-child { text-align: right; font-weight: 600; }
+        .results-table tr:last-child td { border-bottom: none; }
+        .grade-excellent { color: #15803d; }
+        .grade-good { color: #1d4ed8; }
+        .grade-fail { color: #dc2626; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
+        .empty-icon { font-size: 48px; margin-bottom: 15px; opacity: 0.5; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 850; }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; padding: 20px 15px; } .hamburger { display: block; } .overlay.show { display: block; } .results-table th, .results-table td { padding: 10px 12px; } }
+    </style>
+</head>
+<body>
+    <header class="top-header">
+        <div class="header-logo">
+            <button class="hamburger" onclick="toggleSidebar()">☰</button>
+            <div class="logo-mark">G</div>
+            <span>ENG: Gamal Elmzayen</span>
+        </div>
+        <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'"></div>
+    </header>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="menu-section">
+            <div class="menu-label">Main Menu</div>
+            <a href="home.html" class="nav-link"><span class="nav-icon">🏠</span> Home</a>
+            <a href="lectures.html" class="nav-link"><span class="nav-icon">📚</span> Lectures</a>
+            <a href="profile.html" class="nav-link"><span class="nav-icon">👤</span> Profile</a>
+            <a href="results.html" class="nav-link active"><span class="nav-icon">📋</span> My Results</a>
+            <a href="timetable.html" class="nav-link"><span class="nav-icon">📅</span> Timetables</a>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="menu-section">
+            <div class="menu-label">Activities</div>
+            <a href="sheets.html" class="nav-link"><span class="nav-icon">📄</span> Sheets</a>
+            <a href="assignments.html" class="nav-link"><span class="nav-icon">📝</span> Assignments</a>
+            <a href="quizzes.html" class="nav-link"><span class="nav-icon">❓</span> Quizzes</a>
+        </div>
+        <div class="nav-divider"></div>
+        <button class="sidebar-logout" onclick="logout()"><span>🚪</span> Logout</button>
+    </aside>
+    <main class="main-content">
+        <div class="breadcrumb"><a href="home.html">🏠</a><span>›</span><span>Results</span></div>
+        <h1 class="page-title">My Results</h1>
+        <div class="separator"></div>
+        <div class="student-record">
+            <div class="record-label">Student Record</div>
+            <div class="record-name" id="studentNameDisplay">Student</div>
+            <div class="record-id">Academic ID: <span id="studentIdDisplay">262001</span></div>
+        </div>
+        <div id="resultsContainer"></div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/cloud.js"></script>
+    <script src="../js/avatar.js"></script>
+    <script>
+        if (!localStorage.getItem('userType') || localStorage.getItem('userType') !== 'student') window.location.href = '../index.html';
+
+        const studentId = localStorage.getItem('studentId') || '262001';
+        document.getElementById('studentIdDisplay').textContent = studentId;
+        document.getElementById('studentNameDisplay').textContent = 'Student ' + studentId;
+
+        function getGradeClass(grade) {
+            const g = (grade || '').toString().toLowerCase();
+            if (g.includes('ممتاز') || g === 'a' || g === 'a+' || g.includes('excellent')) return 'grade-excellent';
+            if (g === 'f' || g.includes('راسب') || g.includes('fail')) return 'grade-fail';
+            return 'grade-good';
+        }
+
+        function loadResults() {
+            const container = document.getElementById('resultsContainer');
+            CloudStorage.getGrades(studentId).then(grades => {
+                if (grades.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>No results available yet.</p></div>';
+                    return;
+                }
+                const grouped = {};
+                grades.forEach(g => {
+                    const sem = g.semester || 'General';
+                    if (!grouped[sem]) grouped[sem] = [];
+                    grouped[sem].push(g);
+                });
+                let html = '', idx = 0;
+                for (const [semester, items] of Object.entries(grouped)) {
+                    html += `
+                        <div class="semester-block" style="animation-delay:${idx * 0.1}s">
+                            <div class="semester-header">${semester}</div>
+                            <table class="results-table">
+                                <thead><tr><th>Course</th><th style="text-align:right">Evaluation</th></tr></thead>
+                                <tbody>
+                                    ${items.map(g => `
+                                        <tr>
+                                            <td>${g.subject}</td>
+                                            <td class="${getGradeClass(g.grade)}">${g.grade}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                    idx++;
+                }
+                container.innerHTML = html;
+            });
+        }
+        loadResults();
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+        function logout() { localStorage.removeItem('userType'); localStorage.removeItem('studentId'); localStorage.removeItem('userEmail'); window.location.href = '../index.html'; }
+    </script>
+</body>
+</html>

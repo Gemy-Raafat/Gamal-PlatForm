@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Lecture - Admin</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      :root {
+        --teal: #0d7b6e;
+        --teal-dark: #1a5f5f;
+      }
+      html,
+      body {
+        width: 100%;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+      body {
+        background: #f5f6fa;
+      }
+      .top-header {
+        background: var(--teal-dark);
+        padding: 0 30px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo-mark {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .header-left span {
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .back-btn {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 25px;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+      .breadcrumb a {
+        color: #6b7280;
+        text-decoration: none;
+      }
+      .form-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 35px;
+        margin-bottom: 30px;
+        animation: slideUp 0.4s ease-out;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .form-card h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 25px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .form-group {
+        margin-bottom: 5px;
+      }
+      .form-group.span-2 {
+        grid-column: span 2;
+      }
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 7px;
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #111827;
+        background: white;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 2px rgba(13, 123, 110, 0.1);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+      .btn-submit {
+        background: linear-gradient(135deg, var(--teal), #2d9e7a);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 13px 35px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 10px;
+      }
+      .btn-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(13, 123, 110, 0.3);
+      }
+      .success-alert {
+        background: #dcfce7;
+        border: 1px solid #bbf7d0;
+        color: #15803d;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: none;
+        font-weight: 500;
+      }
+      .items-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 25px;
+      }
+      .items-card h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 20px;
+      }
+      .item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #f3f4f6;
+        gap: 12px;
+      }
+      .item-row:last-child {
+        border-bottom: none;
+      }
+      .item-info {
+        flex: 1;
+      }
+      .item-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 3px;
+      }
+      .item-meta {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .delete-btn {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .no-items {
+        text-align: center;
+        padding: 30px;
+        color: #9ca3af;
+        font-size: 14px;
+      }
+      @media (max-width: 768px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-group.span-2 {
+          grid-column: span 1;
+        }
+        .form-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-header">
+      <div class="header-left">
+        <div class="logo-mark">G</div>
+        <span>Admin Panel</span>
+      </div>
+      <a href="index.html" class="back-btn">← Back to Dashboard</a>
+    </header>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">🏠 Dashboard</a><span>›</span
+        ><span>Add Lecture</span>
+      </div>
+      <div class="form-card">
+        <h2>📹 Add New Lecture</h2>
+        <div class="success-alert" id="successAlert">
+          ✅ Lecture added successfully!
+        </div>
+        <form id="lectureForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Lecture Title *</label
+              ><input
+                type="text"
+                id="title"
+                required
+                placeholder="e.g. Introduction to Programming"
+              />
+            </div>
+            <div class="form-group">
+              <label>Lecture Number *</label
+              ><input
+                type="number"
+                id="lectureNum"
+                required
+                placeholder="e.g. 1"
+                min="1"
+              />
+            </div>
+            <div class="form-group">
+              <label>Subject / Course</label
+              ><input
+                type="text"
+                id="subject"
+                placeholder="e.g. Software Engineering"
+              />
+            </div>
+            <div class="form-group">
+              <label>Release Date</label><input type="date" id="date" />
+            </div>
+            <div class="form-group span-2">
+              <label>Video URL</label
+              ><input
+                type="url"
+                id="videoUrl"
+                placeholder="https://youtube.com/..."
+              />
+            </div>
+            <div class="form-group span-2">
+              <label>File URL</label
+              ><input
+                type="url"
+                id="fileUrl"
+                placeholder="https://drive.google.com/..."
+              />
+            </div>
+            <div class="form-group span-2">
+              <label>Description</label
+              ><textarea
+                id="description"
+                placeholder="Brief description..."
+              ></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Add Lecture</button>
+        </form>
+      </div>
+      <div class="items-card">
+        <h3>📋 All Lectures</h3>
+        <div id="lecturesList"></div>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/cloud.js"></script>
+    <script>
+      if (localStorage.getItem("userType") !== "admin")
+        window.location.href = "../index.html";
+      document.getElementById("date").value = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      function loadList() {
+        CloudStorage.get("lectures").then((lectures) => {
+          const data = lectures || [];
+          const list = document.getElementById("lecturesList");
+          if (data.length === 0) {
+            list.innerHTML = '<div class="no-items">No lectures yet.</div>';
+            return;
+          }
+          list.innerHTML = data
+            .map(
+              (lec, idx) => `
+                    <div class="item-row">
+                        <div class="item-info">
+                            <div class="item-title">Lecture ${lec.lectureNum} - ${lec.title}</div>
+                            <div class="item-meta">${lec.subject || "No subject"} | ${lec.date || "No date"}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteItem(${idx})">🗑 Delete</button>
+                    </div>
+                `,
+            )
+            .join("");
+        });
+      }
+
+      function deleteItem(idx) {
+        if (!confirm("Delete this lecture?")) return;
+        CloudStorage.remove("lectures", idx).then(() => loadList());
+      }
+
+      document
+        .getElementById("lectureForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const newLecture = {
+            id: Date.now(),
+            title: document.getElementById("title").value,
+            lectureNum: document.getElementById("lectureNum").value,
+            subject: document.getElementById("subject").value,
+            date: document.getElementById("date").value,
+            videoUrl: document.getElementById("videoUrl").value,
+            fileUrl: document.getElementById("fileUrl").value,
+            description: document.getElementById("description").value,
+          };
+          CloudStorage.add("lectures", newLecture).then(() => {
+            document.getElementById("successAlert").style.display = "block";
+            setTimeout(
+              () =>
+                (document.getElementById("successAlert").style.display =
+                  "none"),
+              3000,
+            );
+            this.reset();
+            document.getElementById("date").value = new Date()
+              .toISOString()
+              .split("T")[0];
+            loadList();
+          });
+        });
+
+      loadList();
+    </script>
+  </body>
+</html>
